@@ -64,7 +64,7 @@ resource "google_compute_instance" "vm_instance" {
   }
 
   attached_disk {
-    source = "data-disk"
+    source = google_compute_disk.data-disk.name
   }
 
   network_interface {
