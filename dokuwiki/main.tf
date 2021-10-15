@@ -31,6 +31,17 @@ provider "google" {
   project = var.project
 }
 
+resource "google_service_account" "dokuwiki-service-account" {
+  account_id   = "dokuwiki-service-account"
+  display_name = "dokuwiki-service-account"
+  description = "Service account for dokuwiki"
+}
+
+resource "google_project_iam_member" "project_member" {
+  role = "roles/editor"
+  member = "serviceAccount:${google_service_account.dokuwiki-service-account.email}"
+}
+
 resource "google_compute_network" "vpc_network" {
   name = "cis91-network"
 }
@@ -50,6 +61,11 @@ resource "google_compute_instance" "vm_instance" {
     access_config {
     }
   }
+
+  service_account {
+    email  = google_service_account.dokuwiki-service-account.email
+    scopes = ["cloud-platform"]
+  }  
 }
 
 resource "google_compute_firewall" "default-firewall" {
