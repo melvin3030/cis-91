@@ -11,6 +11,9 @@
           - python3-pip
           - python3-venv
           - tree
+          - apache2
+          - php
+          - php-xml          
     
     - name: Format data disk
       community.general.filesystem:
