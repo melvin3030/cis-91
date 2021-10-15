@@ -8,5 +8,18 @@
         update_cache: yes
         cache_valid_time: 3600
         name:
-          - python3-pip 
+          - python3-pip
           - python3-venv
+          - tree
+    
+    - name: Format data disk
+      community.general.filesystem:
+       fstype: ext4
+       dev: /dev/disk/by-id/google-persistent-disk-1
+
+    - name: Mount data disk
+      ansible.posix.mount:
+       path: /data
+       src: /dev/disk/by-id/google-persistent-disk-1
+       fstype: ext4
+       state: mounted

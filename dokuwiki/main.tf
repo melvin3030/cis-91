@@ -46,6 +46,13 @@ resource "google_compute_network" "vpc_network" {
   name = "cis91-network"
 }
 
+resource "google_compute_disk" "data-disk" {
+  name  = "data-disk"
+  type  = "pd-standard"
+  size = 100
+  zone  = var.zone
+}
+
 resource "google_compute_instance" "vm_instance" {
   name         = "cis91"
   machine_type = "e2-micro"
@@ -54,6 +61,10 @@ resource "google_compute_instance" "vm_instance" {
     initialize_params {
       image = "ubuntu-os-cloud/ubuntu-2004-lts"
     }
+  }
+
+  attached_disk {
+    source = "data-disk"
   }
 
   network_interface {
