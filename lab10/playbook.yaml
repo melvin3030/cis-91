@@ -1,0 +1,35 @@
+---
+- hosts: all
+  name: Add cis-92 packages
+  become: yes
+  tasks:
+    - name: Install packages 
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        name:
+          - tree
+
+    - name: Format zonal persistant disk
+      community.general.filesystem:
+       fstype: ext4
+       dev: /dev/disk/by-id/google-persistent-disk-2
+
+    - name: Mount zonal persistant disk
+      ansible.posix.mount:
+       path: /data
+       src: /dev/disk/by-id/google-persistent-disk-2
+       fstype: ext4
+       state: mounted
+
+    - name: Format local attached ssd
+      community.general.filesystem:
+       fstype: ext4
+       dev: /dev/disk/by-id/scsi-0Google_EphemeralDisk_local-ssd-0
+       
+    - name: Mount local attached ssd
+      ansible.posix.mount:
+       path: /scratch
+       src: /dev/disk/by-id/scsi-0Google_EphemeralDisk_local-ssd-0
+       fstype: ext4
+       state: mounted
