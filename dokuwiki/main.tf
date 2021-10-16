@@ -53,6 +53,10 @@ resource "google_compute_disk" "data-disk" {
   zone  = var.zone
 }
 
+resource "google_storage_bucket" "backup" {
+  name = "project-dokuwiki-backup"
+}
+
 resource "google_compute_instance" "vm_instance" {
   name         = "cis91"
   machine_type = "e2-micro"
