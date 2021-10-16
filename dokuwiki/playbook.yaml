@@ -26,3 +26,9 @@
        src: /dev/disk/by-id/google-persistent-disk-1
        fstype: ext4
        state: mounted
+
+    - name: Download and extract dokuwiki-stable.tgz
+      ansible.builtin.unarchive:
+        src: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+        dest: /var/www/html
+        remote_src: yes 
