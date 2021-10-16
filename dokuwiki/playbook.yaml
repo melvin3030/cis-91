@@ -13,7 +13,8 @@
           - tree
           - apache2
           - php
-          - php-xml          
+          - php-xml
+          - curl                    
     
     - name: Format data disk
       community.general.filesystem:
@@ -26,7 +27,12 @@
        src: /dev/disk/by-id/google-persistent-disk-1
        fstype: ext4
        state: mounted
-    
+  
+    - name: Run script to install Cloud Logging
+      ansible.builtin.shell: |
+        curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh
+        sudo bash add-logging-agent-repo.sh --also-install
+              
     - name: Download and extract dokuwiki-stable.tgz
       ansible.builtin.unarchive:
         src: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
