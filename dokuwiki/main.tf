@@ -55,6 +55,9 @@ resource "google_compute_disk" "data-disk" {
 
 resource "google_storage_bucket" "backup" {
   name = "project-dokuwiki-backup"
+  location = "US"
+  force_destroy = true  
+  
   lifecycle_rule {
     condition {
         age = 60
