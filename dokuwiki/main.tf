@@ -55,6 +55,14 @@ resource "google_compute_disk" "data-disk" {
 
 resource "google_storage_bucket" "backup" {
   name = "project-dokuwiki-backup"
+  lifecycle_rule {
+    condition {
+        age = 60
+    }
+    action {
+        type = "Delete"
+    }
+  }  
 }
 
 resource "google_compute_instance" "vm_instance" {
