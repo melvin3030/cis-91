@@ -3,6 +3,18 @@
   name: Add cis-92 packages
   become: yes
   tasks:
+    - name: Format data disk
+      community.general.filesystem:
+       fstype: ext4
+       dev: /dev/disk/by-id/google-persistent-disk-1
+
+    - name: Mount data disk
+      ansible.posix.mount:
+       path: /var/www
+       src: /dev/disk/by-id/google-persistent-disk-1
+       fstype: ext4
+       state: mounted
+
     - name: Install packages 
       ansible.builtin.apt:
         update_cache: yes
@@ -14,20 +26,8 @@
           - apache2
           - php
           - php-xml
-          - curl                    
-    
-    - name: Format data disk
-      community.general.filesystem:
-       fstype: ext4
-       dev: /dev/disk/by-id/google-persistent-disk-1
-
-    - name: Mount data disk
-      ansible.posix.mount:
-       path: /data
-       src: /dev/disk/by-id/google-persistent-disk-1
-       fstype: ext4
-       state: mounted
-  
+          - curl    
+          
     - name: Run script to install Cloud Logging
       ansible.builtin.shell: |
         curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh
@@ -41,7 +41,7 @@
 
     - name: Create backup shell script
       copy: 
-        dest: /etc/cron.hourly/backup.sh
+        dest: /etc/cron.hourly/backup
         content: |
           TARGET="gs://project-dokuwiki-backup"
           tar_file=/tmp/dokuwiki-backup-$(date +%s).tar.gz
