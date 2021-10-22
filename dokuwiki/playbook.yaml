@@ -37,6 +37,9 @@
       ansible.builtin.unarchive:
         src: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
         dest: /var/www/html
+        extra_opts: --strip-components=1
+        owner: www-data
+        group: www-data
         remote_src: yes 
 
     - name: Create backup shell script
@@ -48,3 +51,10 @@
           tar -czf $tar_file /var/www/html 2>/dev/null 
           gsutil cp $tar_file $TARGET
           rm -f $tar_file
+
+    - name: Make backup script executable
+      ansible.builtin.file:
+        path: /etc/cron.hourly/backup
+        mode: u+x
+
+      
