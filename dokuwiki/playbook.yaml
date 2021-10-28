@@ -32,6 +32,7 @@
       ansible.builtin.shell: |
         curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh
         sudo bash add-logging-agent-repo.sh --also-install
+        rm add-logging-agent-repo.sh        
               
     - name: Download and extract dokuwiki-stable.tgz
       ansible.builtin.unarchive:
@@ -71,6 +72,7 @@
     - name: Reload apache2 for changes to take effect
       ansible.builtin.shell: |
         sudo /etc/init.d/apache2 reload
+    
 
         
       
