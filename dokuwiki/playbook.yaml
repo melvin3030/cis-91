@@ -46,6 +46,7 @@
       copy: 
         dest: /etc/cron.hourly/backup
         content: |
+          #!/bin/bash
           TARGET="gs://project-dokuwiki-backup"
           tar_file=/tmp/dokuwiki-backup-$(date +%s).tar.gz
           tar -czf $tar_file /var/www/html 2>/dev/null 
@@ -57,4 +58,19 @@
         path: /etc/cron.hourly/backup
         mode: u+x
 
+    - name: Deny Directory Access in apache2
+      ansible.builtin.blockinfile:
+        path: /etc/apache2/sites-available/000-default.conf
+        insertafter: "</VirtualHost>"
+        block: |
+          <LocationMatch "/(data|conf|bin|inc|vendor)/">
+              Order allow,deny
+              Deny from all
+              Satisfy All
+          </LocationMatch>
+    - name: Reload apache2 for changes to take effect
+      ansible.builtin.shell: |
+        sudo /etc/init.d/apache2 reload
+
+        
       
