@@ -54,7 +54,7 @@ resource "google_compute_disk" "data-disk" {
 }
 
 resource "google_storage_bucket" "backup" {
-  name = "project-dokuwiki-backup"
+  name = "dokuwiki-melvin-cis91-backup"
   location = "US"
   force_destroy = true
 
@@ -104,27 +104,27 @@ resource "google_compute_firewall" "default-firewall" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-#resource "google_monitoring_uptime_check_config" "http" {
-  #display_name = "http-uptime-check"
-  #timeout      = "60s"
+resource "google_monitoring_uptime_check_config" "http" {
+  display_name = "dokuwiki-uptime-check"
+  timeout = "60s"
+  period = "60s"    
+  http_check {
+    path = "/doku.php"
+    port = "80"
+    #period = "60"    
+  }
 
-  #http_check {
-    #path = "/doku.php"
-    #port = "8010"
-    #request_method = "POST"
-    #content_type = "URL_ENCODED"
-    #body = "Zm9vJTI1M0RiYXI="
-  #}
-
-  #monitored_resource {
-    #type = "uptime_url"
-    #labels = {
-      #project_id = "my-project-name"
-      #host       = "192.168.1.1"
-    #}
-  #}
-#}
+  monitored_resource {
+    type = "gce_instance"
+    labels = {
+      project_id = var.project
+      instance_id = google_compute_instance.vm_instance.instance_id
+      zone = var.zone
+    }
+  }
+}
 
 output "external-ip" {
   value = google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip
 }
+
