@@ -43,7 +43,7 @@ resource "google_project_iam_member" "project_member" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  name = "cis91-network"
+  name = "project1"
 }
 
 resource "google_compute_disk" "data-disk" {
@@ -57,7 +57,7 @@ resource "google_storage_bucket" "backup" {
   name = "dokuwiki-melvin-cis91-backup"
   location = "US"
   force_destroy = true
-
+  
   lifecycle_rule {
     condition {
         age = 60
@@ -69,7 +69,7 @@ resource "google_storage_bucket" "backup" {
 }
 
 resource "google_compute_instance" "vm_instance" {
-  name         = "cis91"
+  name = "dokuwiki"
   machine_type = "e2-micro"
 
   boot_disk {
@@ -94,8 +94,8 @@ resource "google_compute_instance" "vm_instance" {
   }  
 }
 
-resource "google_compute_firewall" "default-firewall" {
-  name = "default-firewall"
+resource "google_compute_firewall" "project1" {
+  name = "project1"
   network = google_compute_network.vpc_network.name
   allow {
     protocol = "tcp"
