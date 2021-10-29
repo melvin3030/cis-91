@@ -41,7 +41,12 @@
         extra_opts: --strip-components=1
         owner: www-data
         group: www-data
-        remote_src: yes 
+        remote_src: yes
+
+    - name: Remove apache index.html
+      ansible.builtin.file:
+        path: /var/www/html/index.html
+        state: absent
 
     - name: Create backup shell script
       copy: 
