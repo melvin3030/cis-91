@@ -33,53 +33,36 @@ provider "google" {
 
 resource "google_compute_network" "lab11_vpc" {
   name = "cis91-lab11-network"
+  auto_create_subnetworks = false
 }
 
-resource "google_compute_subnetwork" "network_10.17.0.0" {
+resource "google_compute_subnetwork" "subnet01" {
   name          = "lab11-subnetwork01"
   ip_cidr_range = "10.17.0.0/21"
   region        = "us-central1"
   network       = google_compute_network.lab11_vpc.id
+}
 
-resource "google_compute_subnetwork" "network_10.17.8.0" {
+resource "google_compute_subnetwork" "subnet02" {
   name          = "lab11-subnetwork02"
   ip_cidr_range = "10.17.8.0/21"
   region        = "asia-southeast1"
   network       = google_compute_network.lab11_vpc.id
+}
 
-resource "google_compute_subnetwork" "network_10.17.16.0" {
+resource "google_compute_subnetwork" "subnet03" {
   name          = "lab11-subnetwork03"
   ip_cidr_range = "10.17.16.0/21"
   region        = "australia-southeast1"
   network       = google_compute_network.lab11_vpc.id
-
-#resource "google_compute_instance" "vm_instance" {
-  #name         = "cis91"
-  #machine_type = "e2-micro"
-
-  #boot_disk {
-    #initialize_params {
-      #image = "ubuntu-os-cloud/ubuntu-2004-lts"
-    #}
-  #}
-
-  #network_interface {
-    #network = google_compute_network.vpc_network.name
-    #access_config {
-    #}
-  #}
-#}
+}
 
 resource "google_compute_firewall" "default-firewall" {
   name = "default-firewall"
-  network = google_compute_network.vpc_network.name
+  network = google_compute_network.lab11_vpc.name
   allow {
     protocol = "tcp"
     ports = ["22", "80"]
   }
   source_ranges = ["0.0.0.0/0"]
-}
-
-output "external-ip" {
-  value = google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip
 }
