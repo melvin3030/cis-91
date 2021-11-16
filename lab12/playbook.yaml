@@ -8,5 +8,50 @@
         update_cache: yes
         cache_valid_time: 3600
         name:
+          - nodejs
+          - acl
 
+    - name: add nodeuser
+      ansible.builtin.user:
+        name: nodeuser
+        system: yes
+    
+    - name: Git checkout
+      ansible.builtin.git:
+        repo: 'https://github.com/melvin3030/cis-91.git'
+        dest: /home/nodeuser/checkout
+      become_method: sudo
+      become: yes
+      become_user: nodeuser
 
+    - name: Create service definition
+      copy:
+        dest: /lib/systemd/system/node_app.service
+        content: |
+          [Unit]
+          Description=CIS-91 Lab 12
+          Documentation=https://example.com
+          After=network.target
+
+          [Service]
+          Environment=NODE_PORT=3000
+          Type=simple
+          User=nodeuser
+          ExecStart=/usr/bin/node /home/nodeuser/checkout/hello-nodejs/app.js
+          Restart=on-failure
+
+          [Install]
+          WantedBy=multi-user.target
+
+    #- name: Test application
+      #ansible.builtin.shell: |
+        #sudo -u nodeuser /usr/bin/node /home/nodeuser/checkout/hello-nodejs/app.js
+
+    - name: Start nodejs service
+      ansible.builtin.systemd:
+        daemon_reload: yes
+        name: node_app.service
+        enabled: yes
+
+    - name: Reboot machine
+      reboot:
